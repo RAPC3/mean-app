@@ -1,20 +1,20 @@
 module "network" {
-  source = "./modules/network"
+  source = "git::https://github.com/RAPC3/mean-app.git//modules/network"
 
   vpc_cidr             = var.vpc_cidr
   public_subnet_cidr_a = var.public_subnet_cidr_a
   public_subnet_cidr_b = var.public_subnet_cidr_b
   private_subnet_cidr  = var.private_subnet_cidr
-  aws_region           = var.aws_region     
+  aws_region           = var.aws_region
 }
 
 module "security" {
-  source = "./modules/security"
+  source = "git::https://github.com/RAPC3/mean-app.git//modules/security"
   vpc_id = module.network.vpc_id
 }
 
 module "app_instance" {
-  source            = "./modules/app_instance"
+  source            = "git::https://github.com/RAPC3/mean-app.git//modules/app_instance"
   subnet_id         = module.network.public_subnets[0]
   security_group_id = module.security.app_sg_id
   instance_type     = var.instance_type_app
@@ -23,7 +23,7 @@ module "app_instance" {
 }
 
 module "mongo_instance" {
-  source            = "./modules/mongo_instance"
+  source            = "git::https://github.com/RAPC3/mean-app.git//modules/mongo_instance"
   subnet_id         = module.network.private_subnet_id
   security_group_id = module.security.mongo_sg_id
   instance_type     = var.instance_type_mongo
@@ -32,7 +32,7 @@ module "mongo_instance" {
 }
 
 module "load_balancer" {
-  source          = "./modules/load_balancer"
+  source          = "git::https://github.com/RAPC3/mean-app.git//modules/load_balancer"
   vpc_id          = module.network.vpc_id
   public_subnets  = module.network.public_subnets
   alb_sg_id       = module.security.alb_sg_id
